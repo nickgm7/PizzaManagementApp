@@ -1,0 +1,42 @@
+Pizza Management System - by Nicholas Meyer
+
+Description:
+Using flask with python I was able to create a pizza management application that stores toppings and ingredients in
+a firestore database. I used bootstrap to speed up the frontend development process leaving me with more time
+to focus on the backend logic and persistent database connection. Future milestones for the application would be user
+authentication to seperate pizza chef and store owner capabilities as well as improving the UI beyond basic bootstrap
+wrappers.
+
+Store owners are able to:
+
+-   View available toppings
+-   Add new toppings
+-   Delete existing toppings
+-   Update existing toppings
+-   Restrict duplicate toppings
+
+Pizza chefs are able to:
+
+-   View existing pizza recipes
+-   Add new pizza recipes and specify it's toppings
+-   Delete an existing pizza recipe
+-   Update an existing pizza recipe
+-   Update toppings on a pizza recipe
+-   Restrict duplicate pizza recipes
+
+Dependencies for running locally:
+Flask -> CLI: pip install flask
+Python3 -> Install Link: https://www.python.org/downloads/
+Firebase_admin -> CLI: pip install firebase_admin
+serviceAccount.json -> Submission email has this file attached. Place in the project directory (same folder that holds app.py). Note this was not included in the repo because it is a private key that should not be made public.
+
+Directions for running locally:
+
+1. Install above dependencies.
+2. Open the project folder with a text editor such as Visual Studio Code.
+3. Place the serviceAccount.json in the main project folder, should be same directory as app.py.
+4. Run python file in terminal from vscode integrated terminal or from a terminal window that is in the project directory with command -> python3 app.py
+5. Open local host url that is printed in the terminal after running.
+
+Directions for testing:
+All tests should be conducted using the user interface of the web application by following the local host url that is printed in the terminal after running the app. The tests can also be conducted at the deployed website address: https://pizza-management-flask-app.herokuapp.com/

@@ -1,0 +1,170 @@
+{% extends 'base.html' %} {% include 'header.html' %} {% block title %} Pizza
+Management System {% endblock %} {% block body %}
+
+<div class="container">
+  <div class="row">
+    <div class="col md-12">
+      <!-- button for adding toppings -->
+      <div class="jumbotron p-3">
+        <h2>
+          <b>Pizza</b> manager
+          <a type="button" href="{{ url_for('Index') }}" class="btn btn-outline-dark ml-2">Manage Toppings</a>
+          <button type="button" class="btn btn-success float-right" data-toggle="modal" data-target="#addModal">
+            Create Pizza
+          </button>
+        </h2>
+
+        <!-- flash message for notifications -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{category}} alert-dismissable" role="alert">
+          <button type="button" data-dismiss="alert" aria-label="close" class="close">
+            <span aria-hidden="true">x</span>
+          </button>
+          {{message}}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <!-- table for storing toppings -->
+        <table class="table table-hover table-dark">
+          <!-- header row for table -->
+          <tr>
+            <th>Pizza</th>
+            <th>Toppings</th>
+            <th class="float-right">Action</th>
+          </tr>
+          <!-- use for loop to dynamically update table -->
+          {% for row in p %}
+          <tr>
+            <td>{{row.name}}</td>
+            <td>{{row.toppingDisplay}}</td>
+            <td>
+              <a href="/chefs/delete/{{row.name}}" class="btn btn-outline-danger btn-xs float-right ml-2">Delete</a>
+              <a href="/chefs/updateName/{{row.name}}" class="btn btn-outline-light btn-xs float-right ml-2" data-toggle="modal"
+                data-target="#editModal{{row.name}}">Change Name</a>
+                <a href="/chefs/updateToppings/{{row.name}}" class="btn btn-outline-light btn-xs float-right ml-2" data-toggle="modal"
+                  data-target="#editModal{{row.toppings}}">Edit Toppings</a>
+            </td>
+          </tr>
+          <!-- bootstrap modal for editing a pizza name -->
+          <div id="editModal{{row.name}}" class="modal fade" role="dialog">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Edit Name</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <form action="{{url_for('updatePizzaName')}}" method="POST">
+                    <div class="form-group">
+                      <label for="pizza-name" name="{{row}}">Pizza Name</label>
+                      <input type="text" class="form-control" id="updatePizza" name="updatePizza" value="{{row.name}}" />
+                      <!-- use hidden form field to pass value of pizza to be updated -->
+                      <input type="hidden" class="form-control" id="updatePizza" name="oldPizza" value="{{row.name}}" />
+                    </div>
+        
+                    <button type="submit" class="btn btn-primary mt-4">
+                      Submit
+                    </button>
+                  </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- bootstrap modal for editing a pizza toppings -->
+          <div id="editModal{{row.toppings}}" class="modal fade" role="dialog">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Edit Toppings</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <form action="{{url_for('updatePizzaToppings')}}" method="POST">
+                    <div class="form-group">
+                      <!-- use hidden form field to pass value of pizza to be updated -->
+                      <input type="hidden" class="form-control" name="pizza" value="{{row.name}}" />
+                    </div>
+                    <!-- display options for toppings to choose from -->
+                    {% for topping in t %}
+                    <div class="row m-1">
+                      <input type="checkbox" name="toppings" value="{{topping}}" {{ "checked" if topping in row.toppings }}/>
+                      <label class="ml-1">{{topping}}</label>
+                    </div>
+                    {% endfor %}
+                    <br>
+                    <button type="submit" class="btn btn-primary mt-4">
+                      Submit
+                    </button>
+                  </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+
+        </table>
+      </div>
+      
+      <!-- bootstrap modal for adding a pizza -->
+      <div id="addModal" class="modal fade" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Add Pizza</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form action="{{url_for('addPizza')}}" method="POST">
+                <div class="form-group">
+                  <label for="pizza-name">Pizza Name</label>
+                  <input type="text" class="form-control" id="pizza" name="pizza" placeholder="Enter pizza name"
+                    required="1" />
+                </div>
+                <!-- display options for toppings to choose from -->
+                {% for topping in t %}
+                <div class="row m-1">
+                  <input type="checkbox" name="toppings" value="{{topping}}">
+                  <label class="ml-1">{{topping}}</label>
+                </div>
+                {% endfor %}
+                <br>
+                <button type="submit" class="btn btn-primary mt-4">
+                  Submit
+                </button>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+    </div>
+  </div>
+</div>
+
+{% endblock %}
